@@ -46,11 +46,11 @@ class _HomePageWidgetState extends State<HomePageWidget> {
           ),
         ],
         centerTitle: true,
-        elevation: 4,
+        elevation: 7,
       ),
       backgroundColor: Color(0xFFF5F5F5),
       drawer: Container(
-        width: 50,
+        width: 100,
         child: Drawer(
           elevation: 16,
         ),
