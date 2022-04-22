@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "678282943380",
+    "project_id": "between-app",
+    "storage_bucket": "between-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:678282943380:android:f96bce279c6bdb880a8d81",
+        "android_client_info": {
+          "package_name": "com.example.between"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "678282943380-l64ma4mjvgq6peuu65st58hu5qkod8ol.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEwAZktXPDhftyo5irHhE-oKfFbnjdmSM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "678282943380-l64ma4mjvgq6peuu65st58hu5qkod8ol.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
