@@ -3,10 +3,12 @@
 import 'dart:developer';
 import 'package:between/orders/InsertItem.dart';
 import 'package:between/orders/orderConnection/db_item.dart';
+import 'package:between/orders/orderConnection/db_order.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
@@ -19,16 +21,19 @@ class insertOrder extends StatefulWidget {
 
 class _insertOrderState extends State<insertOrder> {
   final data = Get.arguments[0];
-  final date = Get.arguments[1] as List;
+  //final date = Get.arguments[1] as List;
   final formKey = GlobalKey<FormState>();
-  var list;
+
   CollectionReference dbCollection =
   FirebaseFirestore.instance.collection("Days");
   String? chosen ;
   var fetch;
   late List listAfterFetching =[];
+  TextEditingController location = TextEditingController();
+  TextEditingController note = TextEditingController();
+  DateTime date= DateTime(2022,12,12) ;
 
-
+////////////////////guess not important
   List fetchedData = [];
   Future<List> Fetch() async{
   DocumentSnapshot documentSnapshot = await
@@ -37,7 +42,7 @@ class _insertOrderState extends State<insertOrder> {
   fetchedData = documentSnapshot["Value"];
   return fetchedData;
   }
-
+////////////////
 
   @override
   Widget build(BuildContext context) {
@@ -66,9 +71,10 @@ class _insertOrderState extends State<insertOrder> {
             child: Column(
               children: <Widget>[
                 TextFormField(
-
+                  controller: location,
               decoration:  InputDecoration(
                 hintText: 'Enter Location',
+                icon: FaIcon(FontAwesomeIcons.mapMarkerAlt,color: Colors.black,),
                   border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
               borderSide: const BorderSide(color: Colors.black,),),
@@ -92,8 +98,10 @@ class _insertOrderState extends State<insertOrder> {
                   height: 10,
                 ),
                 TextFormField(
+                  controller: note,
                   decoration:  InputDecoration(
                     hintText: 'Enter Note',
+                    icon: FaIcon(FontAwesomeIcons.stickyNote,color: Colors.black,),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(25),
                       borderSide: const BorderSide(color: Colors.black,),),
@@ -106,49 +114,38 @@ class _insertOrderState extends State<insertOrder> {
                   ),
                 ),
                 SizedBox(height: 10,),
-                Row(
-                  children: [
-                    Text("Order time ",style: TextStyle(fontSize: 18),),
-                    SizedBox(width: 100,),
+                // Row(
+                //   children: const [
+                //
+                //     // Text("Order time ",style: TextStyle(fontSize: 18),),
+                //     SizedBox(width: 100,),
+                //   ]
+                // ),
 
-                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4.0),
-                        border: Border.all(
-                            color: Colors.grey, style: BorderStyle.solid, width: 0.80),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          borderRadius: BorderRadius.circular(30) ,
-                          dropdownColor: Colors.white60,
 
-                          hint: Text("date"),
-                          value: chosen,
-                          items: date.map(( document)  {
-                            log(date.runtimeType.toString());
-                            return DropdownMenuItem<String>(
-                              value: document["name"].toString() ,
+                DateTimeFormField(
+                  decoration:  InputDecoration(
+                    hintText: 'Select Date ..',
+                    icon: FaIcon(FontAwesomeIcons.calendar,color: Colors.black,),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25),
+                      borderSide: const BorderSide(color: Colors.black,),),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25),
+                      borderSide: BorderSide(color: Colors.black, width: 2.0),),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25),
+                      borderSide: BorderSide(color: Colors.black, width: 2.0),),
+                  ),
+                  mode: DateTimeFieldPickerMode.date,
+                  //autovalidateMode: AutovalidateMode.always,
+                  onDateSelected: (DateTime value) {
+                    print(value.runtimeType.toString()) ;
+                    date = value;
+                  },
 
-                              child: Text(
-                                document["name"].toString(),
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (valueitem) {
-                            setState(() {
-                              chosen = valueitem!;
-                            });
-                          },
-                        ),
-                      )
-
-                    )
-                  ],
                 ),
-                SizedBox(height: 14,),
-
+                SizedBox(height: 20,),
                 Container(
                   color: Colors.red,
                   width: 400,
@@ -157,19 +154,24 @@ class _insertOrderState extends State<insertOrder> {
                             onPressed: () async {
                               if (formKey.currentState!.validate()) {
                                 Fluttertoast.showToast(msg: "ahhaah");
-                                DbItem().addItem();
 
-                                list = DbItem().Order();
-
-                                log("list is :");
-                                log(list.toString());
-                                if (await list == null) {
+                               // DbItem().Order();
+                                var  list =  await DbItem().addItem(location.text, note.text, date);
+                                print(await "date");
+                                print(await date.toString());
+                                // print("list is :");
+                                 //print(list.runtimeType.toString());
+                                if ( list == null) {
                                   Fluttertoast.showToast(msg: "sth not good ");
                                   //log("list is :"+list);
 
                                 } else {
                                   Fluttertoast.showToast(msg: "sth good");
                                   // log("list is :"+list);
+                                  print("list is :");
+                                  print(list);
+                                 // DbOrder().addOrder(location.text, note.text, date, list);
+
                                   Fluttertoast.showToast(msg: "reached");
                                   // Fluttertoast.showToast(msg: list.length.toString());
                                   //Fluttertoast.showToast(msg: list[0].toString());
@@ -178,6 +180,7 @@ class _insertOrderState extends State<insertOrder> {
                                 // Fluttertoast.showToast(msg: list.toString());
 
                               }
+
                             },
                             child: Text("Send Order"),
                             textColor: Colors.white,

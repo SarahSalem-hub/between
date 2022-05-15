@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'dart:core';
 
+import 'package:between/orders/orderConnection/db_order.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -8,17 +9,17 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
 
 
-class DbItem{
+class DbItem {
   List k=[];
   List itemIds = [];
   var returnedIDS;
-  var list = Get.arguments;
+  var list = Get.arguments[0] as List;
   final box = GetStorage();
 
   var docRef;
 
   CollectionReference dbCollection =
-   FirebaseFirestore.instance.collection("order");
+   FirebaseFirestore.instance.collection("items") ;
 
 
 
@@ -87,51 +88,72 @@ class DbItem{
   //   }
   // }
 
-  void addItem ( ){
+  Future addItem (String location,String note ,DateTime date) async {
     var item;
-    // print ("box before");
-    // print (box1.read("id"));
-    //
-    // box1.erase();
-    //
-    // print ("box after");
-    // print (box1.read("id"));
-    try{
-      // print("list");
-      // print (List);
-      list.forEach((element)   async {
-        k = element.values.last.toList();
+    int count =0;
 
+    //box.erase();
+    try{
+       print("liiiiiist");
+       //list.asMap();
+      list.forEach((element)   async {
+
+        //k = element.values.last.toList;
+        print(element);
         item =
             {
-              'id':element.values.first,
-              'title':k[0],
-              'Quantity':k[1]
+              'id':element["id"],
+              'title':element["item"][0],
+              'Quantity':element["item"][1],
+              // 'Location':location,
+              // 'Note':note ,
+              // 'Date':date
             };
-        Future<String>.delayed(Duration(seconds: 3), () async {
-          await dbCollection
+
+       // Future.delayed(Duration(seconds: -2), () async {await
+         dbCollection
               .doc("itemsGroup")
-              .collection("items").add(item)
-              .then((e) async {
-            print(e.id.toString());
+              .collection("Singleitems").add(item)
+              .then((e)  {
             itemIds.add(e.id);
-            print("length");
-            print (itemIds.length);
+            print("sgsg");
 
-            box.write("id", itemIds);
-
-            Order();
 
           });
-          return "heeeeeeeeeerrreee";
-        });
 
+
+
+          //print(await itemIds.toString());
+         // return Order();
+        //});
+
+
+
+        ////inside then
+        // print(e.id.toString());
+        // itemIds.add(e.id);
+        // print("length here inside");
+        // print (itemIds.length);
+        // print (itemIds.toString());
+        //
+        // box.write("id", itemIds);
+        //////
 
 
 
       });
 
+    // return itemIds;
+       Future.delayed(Duration(seconds: 5), ()  {
 
+
+         DbOrder().addOrder(location, note, date, itemIds);
+         print("kkkkkk");
+         // return itemIds;
+
+         print(itemIds);
+
+       });
     }
 
     catch (e){
@@ -141,14 +163,14 @@ class DbItem{
     }
   }
 
-  Future Order ()async{
+  Future<List> Order ()async{
 
     //box.erase();
     //addItem();
     // print ("data");
     // print (list);
-     print ("box");
-     print(box.read("id"));
+    //  print ("box");
+    //  print(box.read("id"));
     print ("item length in order:");
     print (itemIds.length);
     //

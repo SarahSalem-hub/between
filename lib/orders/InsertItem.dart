@@ -25,7 +25,7 @@ class _insertItemState extends State<insertItem> {
   late var doc  ;
   late List list = [];
   int index = 0;
-  String instruction = " press the \" + \" ";
+  String instruction = " press \" + \" to \n add a new item";
   Icon floatingIcon = new Icon(Icons.add);
 
   addDynamic() {
@@ -76,15 +76,15 @@ class _insertItemState extends State<insertItem> {
 
   @override
   Widget build(BuildContext context) {
-    Widget dynamicTextField = Flexible(
-        flex: 2,
-        child: Container(
+    Widget dynamicTextField = Stack(
+       // flex: 2,
+       children:[ Container(
           //color: Colors.red,
           child: ListView.builder(
             itemCount: DynamicList.length,
             itemBuilder: (context, index) => DynamicList[index],
           ),
-        ));
+        )]);
 
     Widget submitBtn = Container(
       color: Colors.red,
@@ -107,40 +107,40 @@ class _insertItemState extends State<insertItem> {
           Padding(
               padding: EdgeInsets.only(top: 15.5, right: 20),
               child: GestureDetector(
-                  onTap: () async {
+                  onTap: ()  {
                     //DbHelper().addOrder(WidgetControllers().dataMaker(DynamicList, data)[2]);
                     Fluttertoast.showToast(msg: "next");
 
 
-                    CollectionReference documentSnapshot =
-                    FirebaseFirestore.instance.collection("Days");
-                    QuerySnapshot  querySnapshot = await documentSnapshot.orderBy("Value").get();
-
-                    //await dbCollection.get();
-                    list.clear();
-
-                     querySnapshot.docs.map((DocumentSnapshot e)
-                        {
-                          //doc.add(e.data() as Map<String,dynamic>);
-                          //print(e.data() as Map<String,dynamic>);
-                          // print(e["Value"] );
-
-                          Map<String, dynamic> map = {
-                            'name': e["Name"],
-                            'value' :e["Value"]
-
-                          };
-                          list.add(map);
-                          //print ();
-                           //e.data;
-                          //var a = e.data();
-                          //doc.add(Map<String, dynamic>.from(a) );
-                          // print(e.data().toString());
-                          // print(e.data().runtimeType.toString());
-                        }
-                        ).toList();
-
-                    print(list);
+                    // CollectionReference documentSnapshot =
+                    // FirebaseFirestore.instance.collection("Days");
+                    // QuerySnapshot  querySnapshot = await documentSnapshot.orderBy("Value").get();
+                    //
+                    // //await dbCollection.get();
+                    // list.clear();
+                    //
+                    //  querySnapshot.docs.map((DocumentSnapshot e)
+                    //     {
+                    //       //doc.add(e.data() as Map<String,dynamic>);
+                    //       //print(e.data() as Map<String,dynamic>);
+                    //       // print(e["Value"] );
+                    //
+                    //       Map<String, dynamic> map = {
+                    //         'name': e["Name"],
+                    //         'value' :e["Value"]
+                    //
+                    //       };
+                    //       list.add(map);
+                    //       //print ();
+                    //        //e.data;
+                    //       //var a = e.data();
+                    //       //doc.add(Map<String, dynamic>.from(a) );
+                    //       // print(e.data().toString());
+                    //       // print(e.data().runtimeType.toString());
+                    //     }
+                    //     ).toList();
+                    //
+                    // print(list);
 
 
 
@@ -184,9 +184,10 @@ class _insertItemState extends State<insertItem> {
 
         color: Colors.white,
         child: Container(
+
           margin: EdgeInsets.all(10.0),
           child: Stack(
-            children: <Widget>[
+            children: [
               Center(
                 child: Text(instruction),
               ),
