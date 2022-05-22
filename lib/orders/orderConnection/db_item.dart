@@ -88,7 +88,7 @@ class DbItem {
   //   }
   // }
 
-  Future addItem (String location,String note ,DateTime date) async {
+  Future addItem (String orderName ,String location,String note ,DateTime date) async {
     var item;
     int count =0;
 
@@ -123,31 +123,13 @@ class DbItem {
 
 
 
-          //print(await itemIds.toString());
-         // return Order();
-        //});
-
-
-
-        ////inside then
-        // print(e.id.toString());
-        // itemIds.add(e.id);
-        // print("length here inside");
-        // print (itemIds.length);
-        // print (itemIds.toString());
-        //
-        // box.write("id", itemIds);
-        //////
-
-
-
       });
 
     // return itemIds;
        Future.delayed(Duration(seconds: 5), ()  {
 
 
-         DbOrder().addOrder(location, note, date, itemIds);
+         DbOrder().addOrder(orderName,location, note, date, itemIds);
          print("kkkkkk");
          // return itemIds;
 

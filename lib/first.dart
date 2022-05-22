@@ -68,11 +68,22 @@ class _HomePageWidgetState extends State<HomePageWidget> {
           elevation: 16,
         ),
       ),
-      body: Center(child: RoundedButton(
-        onPressed:(){
-          Get.toNamed("/insert_item");
-        },
-        title: "Orders"),
+      body: Center(
+        child: Column(
+          children: [
+            RoundedButton(
+                onPressed:(){
+                  Get.toNamed("/insert_item");
+                },
+                title: "Orders"),
+            SizedBox(height: 20,),
+            RoundedButton(
+                onPressed:(){
+                  Get.toNamed("/fetch_orders");
+                },
+                title: "fetch orders")
+          ],
+        ),
 
       ),
     );

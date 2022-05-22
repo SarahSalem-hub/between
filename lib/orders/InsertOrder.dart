@@ -31,7 +31,9 @@ class _insertOrderState extends State<insertOrder> {
   late List listAfterFetching =[];
   TextEditingController location = TextEditingController();
   TextEditingController note = TextEditingController();
-  DateTime date= DateTime(2022,12,12) ;
+  TextEditingController orderName = TextEditingController();
+  var date = DateTime.now().add(new Duration(days: 2)) ;
+
 
 ////////////////////guess not important
   List fetchedData = [];
@@ -70,6 +72,34 @@ class _insertOrderState extends State<insertOrder> {
             key: formKey,
             child: Column(
               children: <Widget>[
+                TextFormField(
+                  controller: orderName,
+                  decoration:  InputDecoration(
+                    hintText: 'Enter Order Name',
+                    icon: FaIcon(FontAwesomeIcons.pen,color: Colors.black,),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25),
+                      borderSide: const BorderSide(color: Colors.black,),),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25),
+                      borderSide: BorderSide(color: Colors.black, width: 2.0),),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25),
+                      borderSide: BorderSide(color: Colors.black, width: 2.0),),
+                  ),
+
+                  // The validator receives the text that the user has entered.
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+
                 TextFormField(
                   controller: location,
               decoration:  InputDecoration(
@@ -156,7 +186,7 @@ class _insertOrderState extends State<insertOrder> {
                                 Fluttertoast.showToast(msg: "ahhaah");
 
                                // DbItem().Order();
-                                var  list =  await DbItem().addItem(location.text, note.text, date);
+                                var  list =  await DbItem().addItem(orderName.text,location.text, note.text, date);
                                 print(await "date");
                                 print(await date.toString());
                                 // print("list is :");
@@ -207,8 +237,9 @@ class _insertOrderState extends State<insertOrder> {
           child: Column(
             children: [
               orderForm,
-              SizedBox(height: 20),
+              SizedBox(height: 4),
               itemCard,
+
             ],
           ),
         )));
