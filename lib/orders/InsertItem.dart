@@ -28,6 +28,8 @@ class _insertItemState extends State<insertItem> {
   String instruction = " press \" + \" to \n add a new item";
   Icon floatingIcon = new Icon(Icons.add);
 
+
+
   addDynamic() {
     FocusScope.of(context).unfocus();
     if (data.length != 0) {
@@ -43,7 +45,8 @@ class _insertItemState extends State<insertItem> {
 
     if (DynamicList.isEmpty) {
       instruction ="";
-      DynamicList.add(new DynamicItem());
+
+      DynamicList.add(DynamicItem());
     } else {
       String InputValid = WidgetControllers().dataMaker(DynamicList, data)[0];
       if (InputValid == "true") {
@@ -54,25 +57,7 @@ class _insertItemState extends State<insertItem> {
     }
   }
 
-  submitList() {
-    floatingIcon = new Icon(Icons.arrow_back);
-    data = [];
-    setState(() {});
-    // var map = data.asMap();
-  }
 
-  // List fetchedData =[] ;
-  // Future<String> Fetch() async{
-  //   CollectionReference documentSnapshot =
-  //   FirebaseFirestore.instance.collection("Days");
-  //   //await dbCollection.get();
-  //   documentSnapshot.doc().get().then((querySnapshot){
-  //     print(querySnapshot["Value"]);
-  //     return querySnapshot["Value"];
-  //     });
-  //
-  //
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -86,16 +71,7 @@ class _insertItemState extends State<insertItem> {
           ),
         )]);
 
-    Widget submitBtn = Container(
-      color: Colors.red,
-      child: RaisedButton(
-        onPressed: submitList,
-        child: const Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text('Submit'),
-        ),
-      ),
-    );
+
 
     return Scaffold(
       appBar: AppBar(
@@ -111,47 +87,9 @@ class _insertItemState extends State<insertItem> {
                     //DbHelper().addOrder(WidgetControllers().dataMaker(DynamicList, data)[2]);
                     Fluttertoast.showToast(msg: "next");
 
-
-                    // CollectionReference documentSnapshot =
-                    // FirebaseFirestore.instance.collection("Days");
-                    // QuerySnapshot  querySnapshot = await documentSnapshot.orderBy("Value").get();
-                    //
-                    // //await dbCollection.get();
-                    // list.clear();
-                    //
-                    //  querySnapshot.docs.map((DocumentSnapshot e)
-                    //     {
-                    //       //doc.add(e.data() as Map<String,dynamic>);
-                    //       //print(e.data() as Map<String,dynamic>);
-                    //       // print(e["Value"] );
-                    //
-                    //       Map<String, dynamic> map = {
-                    //         'name': e["Name"],
-                    //         'value' :e["Value"]
-                    //
-                    //       };
-                    //       list.add(map);
-                    //       //print ();
-                    //        //e.data;
-                    //       //var a = e.data();
-                    //       //doc.add(Map<String, dynamic>.from(a) );
-                    //       // print(e.data().toString());
-                    //       // print(e.data().runtimeType.toString());
-                    //     }
-                    //     ).toList();
-                    //
-                    // print(list);
-
-
-
-                    // documentSnapshot..then((querySnapshot){
-                    //   print(querySnapshot["Value"]);
-                    //   return querySnapshot["Value"];
-                    // });
-
-                    // print("arg: "+WidgetControllers().dataMaker(DynamicList, data )[1].toString());
                     Get.toNamed("/insert_order",
-                        arguments:[ WidgetControllers()
+                        arguments:[
+                          WidgetControllers()
                             .dataMaker(DynamicList, data)[2],list]);
 
                     // print("arg: "+WidgetControllers().ItemID.length.toString());

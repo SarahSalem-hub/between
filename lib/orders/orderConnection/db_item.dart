@@ -22,78 +22,12 @@ class DbItem {
    FirebaseFirestore.instance.collection("items") ;
 
 
-
-  // Future<Object> addorder ({String? orderName , String? Des ,String? EndDate , String? DocID})async{
-  //
-  //       try{
-  //         final item =
-  //             {
-  //               'OrderName': orderName,
-  //               'Notes': Des
-  //             };
-  //         final order =
-  //         {
-  //           'EndDate':EndDate,
-  //           'itemID' :DocID,
-  //           'items':
-  //                 [
-  //                     {'OrderName': orderName, 'Notes': Des}
-  //                 ]
-  //
-  //         };
-  //
-  //        // dbCollection.doc("items").collection().add(order);
-  //         //dbCollection.doc("item").set(order);
-  //
-  //           return Fluttertoast.showToast(msg: "Order Added");
-  //       }
-  //
-  //       catch (e){
-  //         print(e.toString());
-  //         return e.toString();
-  //
-  //       }
-  // }
-
-  // Future<Object> item ({String? orderName , String? Des ,String? EndDate }) async
-  // {
-  //       return "";
-  //
-  // }
-
-  // Future addOrder (Map map )async{
-  //
-  //   try{
-  //
-  //     map.forEach((key, value) {
-  //       print ("key "+key.toString() );
-  //       print ("value "+value.toString() );
-  //       final item =
-  //       {
-  //         'number': key,
-  //         'Notes': value
-  //       };
-  //       dbCollection.doc("items").collection("sth").add(item);
-  //       print("did it ");
-  //     });
-  //
-  //     return Fluttertoast.showToast(msg: "Order Added");
-  //     return " f";
-  //   }
-  //
-  //   catch (e){
-  //     print("here "+e.toString());
-  //     return e.toString();
-  //
-  //   }
-  // }
-
-  Future addItem (String orderName ,String location,String note ,DateTime date) async {
+  Future addItem (String uid,String orderName ,String location,String note ,DateTime date) async {
     var item;
     int count =0;
 
     //box.erase();
-    try{
+     try{
        print("liiiiiist");
        //list.asMap();
       list.forEach((element)   async {
@@ -111,7 +45,7 @@ class DbItem {
             };
 
        // Future.delayed(Duration(seconds: -2), () async {await
-         dbCollection
+        await dbCollection
               .doc("itemsGroup")
               .collection("Singleitems").add(item)
               .then((e)  {
@@ -126,10 +60,10 @@ class DbItem {
       });
 
     // return itemIds;
-       Future.delayed(Duration(seconds: 5), ()  {
+      await Future.delayed(Duration(seconds: 5), ()  {
 
 
-         DbOrder().addOrder(orderName,location, note, date, itemIds);
+         DbOrder().addOrder(uid,orderName,location, note, date, itemIds);
          print("kkkkkk");
          // return itemIds;
 
@@ -143,16 +77,11 @@ class DbItem {
 
 
     }
+    return "yes";
   }
 
   Future<List> Order ()async{
 
-    //box.erase();
-    //addItem();
-    // print ("data");
-    // print (list);
-    //  print ("box");
-    //  print(box.read("id"));
     print ("item length in order:");
     print (itemIds.length);
     //

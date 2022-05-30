@@ -5,6 +5,9 @@ class DynamicItem extends StatelessWidget {
   TextEditingController controllerQuan = TextEditingController();
   TextEditingController controllerNote = TextEditingController();
 
+
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -15,6 +18,15 @@ class DynamicItem extends StatelessWidget {
           margin: EdgeInsets.all(20),
           child: Column(
             children: [
+
+                        Container(
+                          color: Colors.red,
+                          child: Row(
+                            children: [
+                              itemCount(1),
+                            ],
+                          ),
+                        ),
 
                         TextField(
                           controller: controllerTitle,
@@ -38,3 +50,36 @@ class DynamicItem extends StatelessWidget {
     );
   }
 }
+
+class itemCount extends StatefulWidget {
+  //const itemCount({Key? key}) : super(key: key);
+
+  @override
+  _itemCountState createState() => _itemCountState();
+  var itemsCount = 3;
+  itemCount(itemsCount){
+    this.itemsCount++;
+  }
+
+
+}
+
+class _itemCountState extends State<itemCount> {
+
+
+  @override
+  Widget build(BuildContext context) {
+    var itemsCount = 3;
+
+    return  Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+
+          Text("Item no. $itemsCount",style: TextStyle(),),
+
+        ],
+
+    );
+  }
+}
+

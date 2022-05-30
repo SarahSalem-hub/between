@@ -6,7 +6,9 @@ import 'package:between/orders/orderConnection/db_item.dart';
 import 'package:between/orders/orderConnection/db_order.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_field/date_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -24,16 +26,14 @@ class _insertOrderState extends State<insertOrder> {
   //final date = Get.arguments[1] as List;
   final formKey = GlobalKey<FormState>();
 
-  CollectionReference dbCollection =
-  FirebaseFirestore.instance.collection("Days");
-  String? chosen ;
-  var fetch;
-  late List listAfterFetching =[];
+
+
+
   TextEditingController location = TextEditingController();
   TextEditingController note = TextEditingController();
   TextEditingController orderName = TextEditingController();
   var date = DateTime.now().add(new Duration(days: 2)) ;
-
+  final user = FirebaseAuth.instance.currentUser!;
 
 ////////////////////guess not important
   List fetchedData = [];
@@ -45,6 +45,7 @@ class _insertOrderState extends State<insertOrder> {
   return fetchedData;
   }
 ////////////////
+  var  list;
 
   @override
   Widget build(BuildContext context) {
@@ -183,31 +184,23 @@ class _insertOrderState extends State<insertOrder> {
                       child: RaisedButton(
                             onPressed: () async {
                               if (formKey.currentState!.validate()) {
-                                Fluttertoast.showToast(msg: "ahhaah");
+                                list =  await DbItem().addItem(user.uid,orderName.text,location.text, note.text, date);
 
-                               // DbItem().Order();
-                                var  list =  await DbItem().addItem(orderName.text,location.text, note.text, date);
-                                print(await "date");
-                                print(await date.toString());
-                                // print("list is :");
-                                 //print(list.runtimeType.toString());
-                                if ( list == null) {
-                                  Fluttertoast.showToast(msg: "sth not good ");
-                                  //log("list is :"+list);
+                                showDialog(
+                                   context: context,
+                                   builder:(context)=> AlertDialog(
+                                     content: CircularProgressIndicator(),
+                                   ));
 
-                                } else {
-                                  Fluttertoast.showToast(msg: "sth good");
-                                  // log("list is :"+list);
-                                  print("list is :");
-                                  print(list);
-                                 // DbOrder().addOrder(location.text, note.text, date, list);
 
-                                  Fluttertoast.showToast(msg: "reached");
-                                  // Fluttertoast.showToast(msg: list.length.toString());
-                                  //Fluttertoast.showToast(msg: list[0].toString());
-                                }
-                                //DbHelper().addOrder(list);
-                                // Fluttertoast.showToast(msg: list.toString());
+                                if(list != null)
+                                  {
+
+                                    print("sdgsdg");
+                                    Get.toNamed("/home");
+                                  }
+                                print("list");
+                                print(list);
 
                               }
 
@@ -227,7 +220,7 @@ class _insertOrderState extends State<insertOrder> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,
-          title: Text("Complete an order",style: TextStyle(color: Colors.white),),
+          title: Text(user.uid,style: TextStyle(color: Colors.white),),
         ),
         resizeToAvoidBottomInset: false,
         body: Center(

@@ -8,7 +8,7 @@ class DbOrder {
   CollectionReference dbCollection =
   FirebaseFirestore.instance.collection("order");
 
-  String addOrder (String orderName,String location ,String note ,DateTime date , List itemsIDS){
+  String addOrder (String uid,String orderName,String location ,String note ,DateTime date , List itemsIDS){
     var order;
     try{
       order =
@@ -17,7 +17,9 @@ class DbOrder {
         'Location':location,
         'Note':note ,
         'Date':date,
-        'ItemIds':itemsIDS
+        'ItemIds':itemsIDS,
+        'uid':uid,
+        'NowDate':DateTime.now()
       };
       dbCollection
           .doc("ordersGroup")

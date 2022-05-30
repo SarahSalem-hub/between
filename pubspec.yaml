@@ -58,10 +58,21 @@ dependencies:
   flutter_awesome_buttons: ^1.1.0
   date_field: ^3.0.0
 
+  image_picker: ^0.8.5+3
+  file_picker: ^4.5.1
+  email_validator: ^2.0.1
+  async_executor: ^0.0.2
+  carousel_slider: ^4.0.0
+  shimmer: ^2.0.0
+  #open_whatsapp: ^0.0.1
+
   #for Database
   firebase_database: ^9.0.6
   firebase_core: ^1.12.0
   cloud_firestore: ^3.1.8
+  firebase_auth: ^3.3.18
+  firebase_storage: ^10.2.16
+
 
 
 
@@ -97,6 +108,7 @@ flutter:
     - assets/images/white_logo.svg
     - assets/images/white_logo2.svg
     - assets/images/white_logo3.svg
+    - assets/images/user.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

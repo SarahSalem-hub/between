@@ -1,5 +1,7 @@
 //import '../flutter_flow/flutter_flow_theme.dart';
 //import '../flutter_flow/flutter_flow_util.dart';
+import 'package:between/User/db_user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_awesome_buttons/flutter_awesome_buttons.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -70,6 +72,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
       ),
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             RoundedButton(
                 onPressed:(){
@@ -81,7 +84,21 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                 onPressed:(){
                   Get.toNamed("/fetch_orders");
                 },
-                title: "fetch orders")
+                title: "fetch orders"),
+            SizedBox(height: 20,),
+            RoundedButton(
+                onPressed:(){
+                  Get.toNamed("/sign_up");
+                },
+                title: "Sign up"),
+            SizedBox(height: 20,),
+            RoundedButton(
+                onPressed:(){
+                  db_user().logOut();
+                  Get.toNamed("/login_up");
+                  print(FirebaseAuth.instance.currentUser);
+                },
+                title: "log out")
           ],
         ),
 
