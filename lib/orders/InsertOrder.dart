@@ -197,7 +197,7 @@ class _insertOrderState extends State<insertOrder> {
                                   {
 
                                     print("sdgsdg");
-                                    Get.toNamed("/home");
+                                    Get.toNamed("/home",arguments: {"userId":user.uid,"userEmail":user.email});
                                   }
                                 print("list");
                                 print(list);

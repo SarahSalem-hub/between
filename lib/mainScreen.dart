@@ -82,71 +82,6 @@ class _mainScreenState extends State<mainScreen> with SingleTickerProviderStateM
    // CollectionReference userProfile = FirebaseFirestore.instance.collection("Users");
     return Scaffold(
 
-      // appBar: AppBar(
-      //   backgroundColor: Colors.black,
-      //   title: Text(title),
-      //   centerTitle: true,
-      //   actions: <Widget>[
-      //
-      //     IconButton(icon: Icon(Icons.search), onPressed:null,),
-      //
-      //   ],
-      //
-      //   elevation: 0.0,
-      // ),
-      // drawer:Drawer(
-      //
-      //   child: ListView(
-      //     children: [
-      //
-      //       StreamBuilder(
-      //         stream: userProfile.snapshots(),
-      //           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-      //           return !snapshot.hasData
-      //               ? Text("loading ..")
-      //               : Column(
-      //             children: [
-      //           ...snapshot.data!.docs.where((element) => element["Uid"]== uidDrawer ).map((e)
-      //             {
-      //               return UserAccountsDrawerHeader(
-      //                 decoration: BoxDecoration(
-      //                   color: Colors.black54,
-      //                 ),
-      //               currentAccountPicture: FutureBuilder(
-      //                 future: downloadURLExample(e["ProfilePath"]),
-      //                 builder: (context,snapshot){
-      //                   return snapshot.hasData
-      //                       ? CircleAvatar(
-      //
-      //                     backgroundColor: Colors.white,
-      //                     backgroundImage: NetworkImage(snapshot.data.toString()),)
-      //                       : CircleAvatar(backgroundColor: Colors.grey);
-      //                 },
-      //               ),
-      //             accountName:Text(e["UserName"]) ,accountEmail: Text(uEmailDrawer),
-      //             );
-      //             }
-      //           )],
-      //           );
-      //
-      //           }),
-      //
-      //
-      //       ListTile(
-      //         leading: Icon(Icons.info),
-      //         title: Text("About us"),
-      //
-      //       ),
-      //
-      //       ListTile(
-      //         leading: Icon(Icons.help),
-      //         title: Text("Help"),
-      //
-      //       ),
-      //     ],
-      //   ),
-      // ),
-
       body:
 
       Center(
@@ -165,11 +100,10 @@ class _mainScreenState extends State<mainScreen> with SingleTickerProviderStateM
         child: TabBar(
           controller: _tabController,
           unselectedLabelColor: Colors.white,
-          indicator: UnderlineTabIndicator(borderSide: BorderSide(width: 0.0),
-          ),
+          indicator: UnderlineTabIndicator(borderSide: BorderSide(width: 0.0),),
           labelColor: Colors.pinkAccent,
           labelStyle: TextStyle(fontSize: 14.0),
-          tabs:<Widget> [
+          tabs:const <Widget> [
             Tab(
               icon: Icon(Icons.home),
               text: "Home",
@@ -222,6 +156,8 @@ class DataSearch extends SearchDelegate<String>{
         .collection("SingleOrder");
   CollectionReference usersSearch = FirebaseFirestore.instance
       .collection("Users");
+var username = "User Name ..";
+  var user = FirebaseAuth.instance.currentUser;
 
 
 
@@ -242,7 +178,7 @@ class DataSearch extends SearchDelegate<String>{
           progress:transitionAnimation,
         ) ,
         onPressed: (){
-          Navigator.pop(context);
+          Get.toNamed("/home",arguments: {"userId":user?.uid,"userEmail":user?.email});
         });
 
   }
@@ -257,80 +193,98 @@ class DataSearch extends SearchDelegate<String>{
   @override
   Widget buildSuggestions(BuildContext context) {
 
-    return StreamBuilder(
-        stream: ordersSearch.snapshots().asBroadcastStream(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
-          return !snapshot.hasData
-              ? Center(child: CircularProgressIndicator())
-              :  query != ""
-              ?  SingleChildScrollView(
-                child: Container(
-                 color: HexColor("#EEEEEE"),
-                 // margin: EdgeInsets.only(top: 10),
-                  child: Column(
-                   children: [
-                  ...snapshot.data!.docs.where((element) => element["OrderName"].toString().contains(query)).map((data)  {
-                    return Container(
+    return Container(
+      color: HexColor("#EEEEEE"),
+      child: StreamBuilder(
+          stream: ordersSearch.snapshots().asBroadcastStream(),
+          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
+            return !snapshot.hasData
+                ? Center(child: CircularProgressIndicator())
+                :  query != ""
+                ?  SingleChildScrollView(
+                  child: Container(
+                    margin: EdgeInsets.only(top: 18),
+                   color: HexColor("#EEEEEE"),
+                   // margin: EdgeInsets.only(top: 10),
+                    child: Column(
+                     children: [
+                    ...snapshot.data!.docs.where((element) => element["OrderName"].toString().contains(query)).map((data)  {
+                      return Container(
+                       // color: Colors.red,
 
-                      margin: EdgeInsets.only(right: 10,left:10 ),
-                      child: Column(
-                        children: [
-                          Card(
-                            child: ListTile(
-                              leading: StreamBuilder(
-                                stream: usersSearch.snapshots(),
-                                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                                  return !snapshot.hasData
-                                      ? CircularProgressIndicator()
-                                      : Column(
-                                    children: [
-                                      ...snapshot.data!.docs.where((element) => element["Uid"]==data["uid"]).map((e)
-                                      {
-                                        // profile = imageUrl.child(e["ProfilePath"]).getDownloadURL();
+                        margin: EdgeInsets.only(right: 10,left:10 ),
+                        child: Column(
+                          children: [
+                            Card(
+                              child: Container(
+                                padding: EdgeInsets.all(8),
+                               // color:Colors.pink,
+                                child: ListTile(
+                                  leading: StreamBuilder(
+                                    stream: usersSearch.snapshots(),
+                                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                      return !snapshot.hasData
+                                          ? CircularProgressIndicator()
+                                          : Column(
+                                        children: [
+                                          ...snapshot.data!.docs.where((element) => element["Uid"]==data["uid"]).map((e)
+                                          {
+                                            // profile = imageUrl.child(e["ProfilePath"]).getDownloadURL();
 
-                                        //profilePath = e["ProfilePath"];
-                                        //username =  e["UserName"];
-                                        return Container(
-                                            child: Column(
-                                              children: [
-                                                FutureBuilder(
-                                                  future: downloadURLExample(e["ProfilePath"]),
-                                                  builder: (context,snapshot){
-                                                    return snapshot.hasData
-                                                        ? CircleAvatar(
+                                            //profilePath = e["ProfilePath"];
+                                            username =  e["UserName"];
+                                            return Container(
+                                                child: Column(
+                                                  children: [
+                                                    FutureBuilder(
+                                                      future: downloadURLExample(e["ProfilePath"]),
+                                                      builder: (context,snapshot){
+                                                        return snapshot.hasData
+                                                            ? Container(
+                                                              child: Column(
+                                                                children: [
+                                                                  CircleAvatar(
+                                                                    radius: 23,
+                                                                    backgroundColor: Colors.white,
+                                                                    backgroundImage: NetworkImage(snapshot.data.toString()),),
 
-                                                      backgroundColor: Colors.white,
-                                                      backgroundImage: NetworkImage(snapshot.data.toString()),)
-                                                        : CircleAvatar(backgroundColor: Colors.grey);
-                                                  },
-                                                ),
-                                                // Text(e["UserName"])
-                                              ],
-                                            )
-                                        );
-                                        // return CircleAvatar(
-                                        //   child: Image.network(downloadURLExample().toString(),fit: BoxFit.cover,),);
-                                      })
-                                    ],
-                                  );
-                                },
+
+                                                                ],
+                                                              ),
+                                                            )
+                                                            : CircleAvatar(backgroundColor: Colors.grey);
+                                                      },
+                                                    ),
+                                                    // Text(e["UserName"])
+                                                  ],
+                                                )
+                                            );
+                                            // return CircleAvatar(
+                                            //   child: Image.network(downloadURLExample().toString(),fit: BoxFit.cover,),);
+                                          })
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                  title: Text(data["OrderName"]),
+                                  subtitle: Text(username),
+                                ),
                               ),
-                              title: Text(data["OrderName"]),
                             ),
-                          ),
+                          SizedBox(height: 5,)
 
-
-                          SizedBox(height: 7,)
-                        ],
-                      ),
-                    );
-                  })
-            ],
-          ),
-                ),
-              )
-              :Center(child: Text("search anything here"),);
-        });
+                           // SizedBox(height: 7,)
+                          ],
+                        ),
+                      );
+                    })
+              ],
+            ),
+                  ),
+                )
+                :Center(child: Text("search anything here"),);
+          }),
+    );
 
   }
   Future<String> downloadURLExample(String imagePath) async {

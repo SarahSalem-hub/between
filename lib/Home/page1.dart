@@ -12,6 +12,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:between/orders/fetchOrders.dart' as fetch;
 
 import '../User/db_user.dart';
+import '../orders/fetchOrders.dart';
 import 'notifiction.dart';
 
 
@@ -24,6 +25,17 @@ class Page1 extends StatelessWidget {
   var uidDrawer =  Get.arguments["userId"];
   var uEmailDrawer =  Get.arguments["userEmail"];
   CollectionReference userProfile = FirebaseFirestore.instance.collection("Users");
+var username ="";
+  CollectionReference orderCollection = FirebaseFirestore.instance
+      .collection("order")
+      .doc("ordersGroup")
+      .collection("SingleOrder");
+  CollectionReference itemCollection = FirebaseFirestore.instance
+      .collection("items")
+      .doc("itemsGroup")
+      .collection("Singleitems");
+  var  storedItemIds = [];
+  List returnValue =[];
 
 
   @override
@@ -62,6 +74,7 @@ class Page1 extends StatelessWidget {
                   children: [
                     ...snapshot.data!.docs.where((element) => element["Uid"]== uidDrawer ).map((e)
                     {
+                      username = e["UserName"];
                       return UserAccountsDrawerHeader(
                         decoration: BoxDecoration(
                           color: Colors.black54,
@@ -111,60 +124,136 @@ class Page1 extends StatelessWidget {
       ),
     ),
 
-    body:
-    ListView(
-        children: [
-          CarouselSlider(
-            options: CarouselOptions( autoPlay: true,height: 250.0),
-            items: [
+    body:SingleChildScrollView(
+      child: Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
 
-            ].map((i) {
-              return Builder(
-                builder: (BuildContext context) {
-                  return Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: EdgeInsets.symmetric(horizontal: 5.0),
-                      decoration: BoxDecoration(
-                          color: Colors.white
+            Container(
+              padding: EdgeInsets.only(top: 40,left: 30,bottom: 20),
+              child: Text("Welcome,$username !",style: TextStyle(fontSize:20 ),),
+            ),
+
+            Container(
+              child:  StreamBuilder(
+                stream: orderCollection.snapshots(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+
+
+                  return !snapshot.hasData
+                      ? Center(child: CircularProgressIndicator())
+                      : Container(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          ...snapshot.data!.docs.map((data) {
+                            //print( itemsNames(data["ItemIds"]));
+
+                            return orderCard(snapshot, data);
+                          }),
+                        ],
                       ),
-                      child: Image.network(i),
+                    ),
                   );
                 },
-              );
-            }).toList(),
-          ),
-
-
-
-
-
-          Padding(
-     padding: const EdgeInsets.all(100.0),
-     child: Container(
-       margin: EdgeInsets.all(0),
-       child:Column(
-         crossAxisAlignment: CrossAxisAlignment.stretch,
-         mainAxisAlignment: MainAxisAlignment.center,
-         children:<Widget> [
-          FlatButton(
-            child: const Text("Orders"),
-            color: Colors.black,
-            textColor: Colors.white,
-            onPressed: () {
-Navigator.of(context).push(MaterialPageRoute(builder: (context)=>OrdersPage()
-)
-);
-          },
-          ),
-
-
-  ]
-       )
+              ),
+            )
+          ],
         ),
-   )
-  ]
-    ),
+      ),
+    )
+
+
   );
+
+  Widget orderCard(snapshot, data) {
+
+    DateTime dt = (data["Date"] as Timestamp).toDate();
+    final user = FirebaseAuth.instance.currentUser!;
+    CollectionReference userProfile = FirebaseFirestore.instance.collection("Users");
+    var profilePath;
+    var username;
+    return InkWell(
+      onTap: () {
+        Get.toNamed("/single_order", arguments: {"oId": data.id,"path":profilePath.toString(),"username":username});
+      },
+      child: Card(
+        elevation: 5,
+        child: ListTile(
+          horizontalTitleGap: 16,
+          leading: StreamBuilder(
+            stream: userProfile.snapshots(),
+            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              return !snapshot.hasData
+                  ? CircularProgressIndicator()
+                  : Column(
+                children: [
+                  ...snapshot.data!.docs.where((element) => element["Uid"]==data["uid"]).map((e)
+                  {
+                    // profile = imageUrl.child(e["ProfilePath"]).getDownloadURL();
+
+                    profilePath = e["ProfilePath"];
+                    username =  e["UserName"];
+                    return Container(
+                        child: Column(
+                          children: [
+                            FutureBuilder(
+                              future: downloadURLExample(e["ProfilePath"]),
+                              builder: (context,snapshot){
+                                return snapshot.hasData
+                                    ? CircleAvatar(
+
+                                  backgroundColor: Colors.white,
+                                  backgroundImage: NetworkImage(snapshot.data.toString()),)
+                                    : CircleAvatar(backgroundColor: Colors.grey);
+                              },
+                            ),
+                            // Text(e["UserName"])
+                          ],
+                        )
+                    );
+                    // return CircleAvatar(
+                    //   child: Image.network(downloadURLExample().toString(),fit: BoxFit.cover,),);
+                  })
+                ],
+              );
+            },
+          ), //order id
+          title: Text(data["OrderName"]), //order field
+          subtitle: Text(itemsNames(storedItemIds,data["ItemIds"]).toString()), //order items ids
+          trailing:  Text(
+            dt.day.toString() +
+                "/" +
+                dt.month.toString() +
+                "/" +
+                dt.year.toString(),
+            style: TextStyle(color: Colors.grey),
+          ),
+        ),
+      ),
+    );
+  }
+
+  List itemsNames (List storedIds, List<dynamic> orderItemIds){
+    returnValue.clear();
+
+    for( int i =0 ; i< storedIds.length; i++)
+    {
+
+      for( int j =0 ; j< orderItemIds.length; j++ ) {
+
+        if (storedIds[i]["id"] == orderItemIds[j]) {
+
+          returnValue.add(storedIds[i]["Name"].toString());
+          //print(returnValue.toString());
+        }
+      }
+    }
+    return returnValue;
+
+  }
 
   Future<String> downloadURLExample(String imagePath) async {
 
