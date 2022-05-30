@@ -32,8 +32,13 @@ class _SplashScreenState extends State<SplashScreen> {
         }
       else
         {
-
-          Get.toNamed("/page1Home",arguments: {"userId":user.uid,"userEmail":user.email});
+          if ((user.uid != null) && (user.email != null))
+          {
+            Get.toNamed("/home",arguments: {"userId":user.uid,"userEmail":user.email});
+          }
+          else {
+            Get.toNamed("/home");
+          }
         }
     }
     );

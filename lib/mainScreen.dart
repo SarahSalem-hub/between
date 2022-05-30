@@ -73,8 +73,8 @@ class _mainScreenState extends State<mainScreen> with SingleTickerProviderStateM
     _tabController.dispose();
   }
 
-  var uidDrawer =  Get.arguments["userId"];
-  var uEmailDrawer =  Get.arguments["userEmail"];
+  // var uidDrawer =  Get.arguments["userId"];
+  // var uEmailDrawer =  Get.arguments["userEmail"];
 
 
   @override
@@ -242,7 +242,7 @@ class DataSearch extends SearchDelegate<String>{
           progress:transitionAnimation,
         ) ,
         onPressed: (){
-          close(context, "null");
+          Navigator.pop(context);
         });
 
   }
@@ -263,69 +263,71 @@ class DataSearch extends SearchDelegate<String>{
           return !snapshot.hasData
               ? Center(child: CircularProgressIndicator())
               :  query != ""
-              ?  Container(
-               color: HexColor("#EEEEEE"),
-               // margin: EdgeInsets.only(top: 10),
-                child: Column(
-                 children: [
-                ...snapshot.data!.docs.where((element) => element["OrderName"].toString().contains(query)).map((data)  {
-                  return Container(
+              ?  SingleChildScrollView(
+                child: Container(
+                 color: HexColor("#EEEEEE"),
+                 // margin: EdgeInsets.only(top: 10),
+                  child: Column(
+                   children: [
+                  ...snapshot.data!.docs.where((element) => element["OrderName"].toString().contains(query)).map((data)  {
+                    return Container(
 
-                    margin: EdgeInsets.only(right: 10,left:10 ),
-                    child: Column(
-                      children: [
-                        Card(
-                          child: ListTile(
-                            title: StreamBuilder(
-                              stream: usersSearch.snapshots(),
-                              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                                return !snapshot.hasData
-                                    ? CircularProgressIndicator()
-                                    : Column(
-                                  children: [
-                                    ...snapshot.data!.docs.where((element) => element["Uid"]==data["uid"]).map((e)
-                                    {
-                                      // profile = imageUrl.child(e["ProfilePath"]).getDownloadURL();
+                      margin: EdgeInsets.only(right: 10,left:10 ),
+                      child: Column(
+                        children: [
+                          Card(
+                            child: ListTile(
+                              leading: StreamBuilder(
+                                stream: usersSearch.snapshots(),
+                                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                  return !snapshot.hasData
+                                      ? CircularProgressIndicator()
+                                      : Column(
+                                    children: [
+                                      ...snapshot.data!.docs.where((element) => element["Uid"]==data["uid"]).map((e)
+                                      {
+                                        // profile = imageUrl.child(e["ProfilePath"]).getDownloadURL();
 
-                                      //profilePath = e["ProfilePath"];
-                                      //username =  e["UserName"];
-                                      return Container(
-                                          child: Column(
-                                            children: [
-                                              FutureBuilder(
-                                                future: downloadURLExample(e["ProfilePath"]),
-                                                builder: (context,snapshot){
-                                                  return snapshot.hasData
-                                                      ? CircleAvatar(
+                                        //profilePath = e["ProfilePath"];
+                                        //username =  e["UserName"];
+                                        return Container(
+                                            child: Column(
+                                              children: [
+                                                FutureBuilder(
+                                                  future: downloadURLExample(e["ProfilePath"]),
+                                                  builder: (context,snapshot){
+                                                    return snapshot.hasData
+                                                        ? CircleAvatar(
 
-                                                    backgroundColor: Colors.white,
-                                                    backgroundImage: NetworkImage(snapshot.data.toString()),)
-                                                      : CircleAvatar(backgroundColor: Colors.grey);
-                                                },
-                                              ),
-                                              // Text(e["UserName"])
-                                            ],
-                                          )
-                                      );
-                                      // return CircleAvatar(
-                                      //   child: Image.network(downloadURLExample().toString(),fit: BoxFit.cover,),);
-                                    })
-                                  ],
-                                );
-                              },
+                                                      backgroundColor: Colors.white,
+                                                      backgroundImage: NetworkImage(snapshot.data.toString()),)
+                                                        : CircleAvatar(backgroundColor: Colors.grey);
+                                                  },
+                                                ),
+                                                // Text(e["UserName"])
+                                              ],
+                                            )
+                                        );
+                                        // return CircleAvatar(
+                                        //   child: Image.network(downloadURLExample().toString(),fit: BoxFit.cover,),);
+                                      })
+                                    ],
+                                  );
+                                },
+                              ),
+                              title: Text(data["OrderName"]),
                             ),
-                            leading: Text(data["OrderName"]),
                           ),
-                        ),
 
 
-                        SizedBox(height: 7,)
-                      ],
-                    ),
-                  );
-                })
+                          SizedBox(height: 7,)
+                        ],
+                      ),
+                    );
+                  })
             ],
           ),
+                ),
               )
               :Center(child: Text("search anything here"),);
         });

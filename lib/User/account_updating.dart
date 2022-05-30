@@ -137,12 +137,12 @@ class _accountUpdatingState extends State<accountUpdating> {
                       if (path != null)
                      {
                        await db_account().updateAccount(path, uid, userName.text, userBio.text, userNumber.text);
-                       //Get.toNamed("/page1Home");
+                       Get.toNamed("/home",arguments: {"userId":user.uid,"userEmail":user.email});
                      }
                       else
                         {
                           await db_account().updateAccount("null", uid, userName.text, userBio.text, userNumber.text);
-                          Get.toNamed("/home");
+                          Get.toNamed("/home",arguments: {"userId":user.uid,"userEmail":user.email});
                         }
                     }
 

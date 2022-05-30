@@ -46,7 +46,9 @@ class Page1 extends StatelessWidget {
 
       elevation: 0.0,
     ),
-    drawer:Drawer(
+    drawer:(( uEmailDrawer == null ) && (uidDrawer == null) )
+      ? Drawer(child: UserAccountsDrawerHeader(accountName: Text("sdgs"), accountEmail: Text("sdgs")))
+      : Drawer(
 
       child: ListView(
         children: [
