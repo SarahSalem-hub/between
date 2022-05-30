@@ -10,6 +10,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'Home/notifiction.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -215,6 +216,12 @@ class DataSearch extends SearchDelegate<String>{
     "Builiding"
   ];
 
+    CollectionReference ordersSearch = FirebaseFirestore.instance
+        .collection("order")
+        .doc("ordersGroup")
+        .collection("SingleOrder");
+  CollectionReference usersSearch = FirebaseFirestore.instance
+      .collection("Users");
 
 
 
@@ -250,21 +257,88 @@ class DataSearch extends SearchDelegate<String>{
   @override
   Widget buildSuggestions(BuildContext context) {
 
-    // throw UnimplementedError();
-    final suggetionsList = FirebaseFirestore.instance
-        .collection("order")
-        .doc("ordersGroup")
-        .collection("SingleOrder")
-        .where("OrderName",isGreaterThanOrEqualTo:"foodstuffs" ).snapshots();
-    return ListView.builder(itemBuilder: (context, index) => ListTile(
+    return StreamBuilder(
+        stream: ordersSearch.snapshots().asBroadcastStream(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
+          return !snapshot.hasData
+              ? Center(child: CircularProgressIndicator())
+              :  query != ""
+              ?  Container(
+               color: HexColor("#EEEEEE"),
+               // margin: EdgeInsets.only(top: 10),
+                child: Column(
+                 children: [
+                ...snapshot.data!.docs.where((element) => element["OrderName"].toString().contains(query)).map((data)  {
+                  return Container(
 
-      leading: Icon(Icons.location_city),
-      title: Text(suggetionsList.forEach((e) {e.toString();}).toString())
-    ),
-    // itemCount: suggetionsList,
-    );
+                    margin: EdgeInsets.only(right: 10,left:10 ),
+                    child: Column(
+                      children: [
+                        Card(
+                          child: ListTile(
+                            title: StreamBuilder(
+                              stream: usersSearch.snapshots(),
+                              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                return !snapshot.hasData
+                                    ? CircularProgressIndicator()
+                                    : Column(
+                                  children: [
+                                    ...snapshot.data!.docs.where((element) => element["Uid"]==data["uid"]).map((e)
+                                    {
+                                      // profile = imageUrl.child(e["ProfilePath"]).getDownloadURL();
+
+                                      //profilePath = e["ProfilePath"];
+                                      //username =  e["UserName"];
+                                      return Container(
+                                          child: Column(
+                                            children: [
+                                              FutureBuilder(
+                                                future: downloadURLExample(e["ProfilePath"]),
+                                                builder: (context,snapshot){
+                                                  return snapshot.hasData
+                                                      ? CircleAvatar(
+
+                                                    backgroundColor: Colors.white,
+                                                    backgroundImage: NetworkImage(snapshot.data.toString()),)
+                                                      : CircleAvatar(backgroundColor: Colors.grey);
+                                                },
+                                              ),
+                                              // Text(e["UserName"])
+                                            ],
+                                          )
+                                      );
+                                      // return CircleAvatar(
+                                      //   child: Image.network(downloadURLExample().toString(),fit: BoxFit.cover,),);
+                                    })
+                                  ],
+                                );
+                              },
+                            ),
+                            leading: Text(data["OrderName"]),
+                          ),
+                        ),
 
 
+                        SizedBox(height: 7,)
+                      ],
+                    ),
+                  );
+                })
+            ],
+          ),
+              )
+              :Center(child: Text("search anything here"),);
+        });
+
+  }
+  Future<String> downloadURLExample(String imagePath) async {
+
+    var downloadURL = await FirebaseStorage.instance
+        .ref(imagePath)
+        .getDownloadURL();
+
+    //print(downloadURL.toString());
+    return downloadURL;
   }
 }
 

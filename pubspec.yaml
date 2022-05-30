@@ -65,6 +65,7 @@ dependencies:
   carousel_slider: ^4.0.0
   shimmer: ^2.0.0
   #open_whatsapp: ^0.0.1
+  hexcolor: ^2.0.7
 
   #for Database
   firebase_database: ^9.0.6
